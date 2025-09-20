@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -14,10 +15,18 @@ import (
 
 func RequireAuth(c *gin.Context) {
 	// Ambil token dari Authorization header
-	tokenString := c.GetHeader("Authorization")
+	authHeader := c.GetHeader("Authorization")
 
-	if tokenString == "" {
-		c.AbortWithStatus(http.StatusUnauthorized)
+	if authHeader == "" {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
+		return
+	}
+
+	// Pisahkan "Bearer" dari token
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+	if tokenString == authHeader { // Jika tidak ada prefix "Bearer ", formatnya salah
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token format"})
 		return
 	}
 
@@ -30,20 +39,20 @@ func RequireAuth(c *gin.Context) {
 	})
 
 	if err != nil || !token.Valid {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 		return
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Failed to parse claims"})
 		return
 	}
 
 	// Cek apakah token sudah kedaluwarsa
 	expFloat, ok := claims["exp"].(float64)
 	if !ok || float64(time.Now().Unix()) > expFloat {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token has expired"})
 		return
 	}
 
@@ -52,7 +61,7 @@ func RequireAuth(c *gin.Context) {
 	config.DB.First(&user, claims["sub"])
 
 	if user.ID == 0 {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
 		return
 	}
 
