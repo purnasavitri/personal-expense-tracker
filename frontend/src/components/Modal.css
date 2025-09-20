@@ -1,0 +1,104 @@
+/* Floating Action Button (+) */
+.fab {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #1a73e8;
+  color: white;
+  font-size: 36px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: background-color 0.3s;
+}
+
+.fab:hover {
+  background-color: #1558b8;
+}
+
+/* Modal Overlay & Content */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #888;
+}
+
+/* Form di dalam Modal */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-form h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.modal-form input,
+.modal-form select {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-form button {
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: #1a73e8;
+  color: white;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.modal-form .new-category-input {
+  margin-top: -5px; /* Sedikit lebih dekat ke dropdown */
+}
+
+/* Tabel Transaksi yang bisa diklik */
+.transaction-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.transaction-table tbody tr:hover {
+  background-color: #f0f4ff !important;
+}

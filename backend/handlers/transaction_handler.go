@@ -48,13 +48,26 @@ func CreateTransaction(c *gin.Context) {
 func GetTransactions(c *gin.Context) {
 	user, _ := c.Get("user")
 
-	var transactions []models.Transaction
-	// Ambil semua transaksi yang UserID-nya cocok dengan user yang sedang login
-	config.DB.Where("user_id = ?", user.(models.User).ID).Find(&transactions)
+	// Kita buat struct baru untuk menampung hasil join
+	type TransactionWithCategory struct {
+		models.Transaction
+		CategoryName string `json:"category_name"`
+	}
+
+	var transactions []TransactionWithCategory
+
+	// Menggunakan GORM untuk melakukan JOIN antara tabel transactions dan categories
+	config.DB.Table("transactions").
+		Select("transactions.*, categories.name as category_name").
+		Joins("left join categories on categories.id = transactions.category_id").
+		Where("transactions.user_id = ?", user.(models.User).ID).
+		Order("transactions.created_at desc").
+		Scan(&transactions)
 
 	c.JSON(http.StatusOK, transactions)
 }
 
+// ... (fungsi-fungsi lain biarkan seperti semula) ...
 // --- Mengambil Satu Transaksi Berdasarkan ID ---
 func GetTransactionByID(c *gin.Context) {
 	id := c.Param("id")

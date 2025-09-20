@@ -23,6 +23,10 @@ func SetupAPIRoutes(router *gin.Engine) {
 			protected.GET("/transactions/:id", handlers.GetTransactionByID)
 			protected.PUT("/transactions/:id", handlers.UpdateTransaction)
 			protected.DELETE("/transactions/:id", handlers.DeleteTransaction)
+
+			// Rute untuk Kategori
+			protected.POST("/categories", handlers.CreateCategory)
+			protected.GET("/categories", handlers.GetCategories)
 		}
 	}
 }
