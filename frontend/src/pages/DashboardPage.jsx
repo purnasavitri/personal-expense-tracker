@@ -1,9 +1,8 @@
-// file: src/pages/DashboardPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import '../pages/Dashboard.css'; // Styling utama
-import '../components/Modal.css';   // Styling untuk modal & FAB
+import '../pages/Dashboard.css';
+import '../components/Modal.css';
 import FloatingActionButton from '../components/FloatingActionButton';
 import TransactionModal from '../components/TransactionModal';
 
@@ -14,9 +13,8 @@ function DashboardPage() {
   const [editingTransaction, setEditingTransaction] = useState(null);
   const navigate = useNavigate();
 
-  // --- Fungsi untuk mengambil semua data (transaksi & kategori) ---
   const fetchData = async () => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) { handleLogout(); return; }
     try {
       const headers = { Authorization: `Bearer ${token}` };
@@ -36,7 +34,6 @@ function DashboardPage() {
     fetchData();
   }, []);
 
-  // --- Handler untuk Modal ---
   const handleOpenAddModal = () => {
     setEditingTransaction(null);
     setIsModalOpen(true);
@@ -52,30 +49,26 @@ function DashboardPage() {
   };
   
   const handleSaveTransaction = async (data, transactionId) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
     try {
       if (transactionId) {
-        // Mode Edit
         await api.put(`/transactions/${transactionId}`, data, { headers });
       } else {
-        // Mode Tambah
         await api.post('/transactions', data, { headers });
       }
       handleCloseModal();
-      fetchData(); // Muat ulang data setelah berhasil menyimpan
+      fetchData();
     } catch (error) {
       console.error('Gagal menyimpan transaksi:', error);
     }
   };
 
-  // --- Handler Logout ---
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     navigate('/login');
   };
 
-  // --- Kalkulasi & Format Rupiah (sama seperti sebelumnya) ---
   const pendapatan = transactions.filter(t => t.Type === 'income').reduce((acc, t) => acc + t.Amount, 0);
   const pengeluaran = transactions.filter(t => t.Type === 'expense').reduce((acc, t) => acc + t.Amount, 0);
   const total = pendapatan - pengeluaran;
@@ -88,14 +81,12 @@ function DashboardPage() {
         <button onClick={handleLogout}>Logout</button>
       </div>
       
-      {/* Bagian Summary Cards */}
       <div className="summary-cards">
         <div className="card"><h3>Pendapatan</h3><p className="amount income">{formatRupiah(pendapatan)}</p></div>
         <div className="card"><h3>Pengeluaran</h3><p className="amount expense">{formatRupiah(pengeluaran)}</p></div>
         <div className="card"><h3>Total</h3><p className="amount total">{formatRupiah(total)}</p></div>
       </div>
       
-      {/* Bagian Tabel Transaksi */}
       <div className="transaction-section">
         <h2>TRANSAKSI</h2>
         <table className="transaction-table">
@@ -119,7 +110,6 @@ function DashboardPage() {
         </table>
       </div>
 
-      {/* Komponen-komponen fungsional */}
       <FloatingActionButton onClick={handleOpenAddModal} />
       <TransactionModal
         isOpen={isModalOpen}

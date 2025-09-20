@@ -1,4 +1,3 @@
-// file: src/components/TransactionModal.jsx
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 
@@ -52,7 +51,7 @@ function TransactionModal({ isOpen, onClose, onSave, transactionToEdit, categori
 
     // Jika user menambah kategori baru
     if (isAddingNewCategory && newCategoryName) {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       try {
         const response = await api.post('/categories', 
           { name: newCategoryName },
@@ -64,7 +63,7 @@ function TransactionModal({ isOpen, onClose, onSave, transactionToEdit, categori
         return;
       }
     }
-
+    
     const finalData = {
       ...formData,
       amount: parseFloat(formData.amount),
