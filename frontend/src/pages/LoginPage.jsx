@@ -1,8 +1,7 @@
-// file: src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
-import '../Auth.css';
+import '../style/Auth.css';
 
 function LoginPage() {
   const [email, setEmail] = useState('');

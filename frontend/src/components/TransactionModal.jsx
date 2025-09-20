@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 
-function TransactionModal({ isOpen, onClose, onSave, transactionToEdit, categories }) {
+function TransactionModal({ isOpen, onClose, onSave, onDelete, transactionToEdit, categories }) {
   const [formData, setFormData] = useState({
     description: '',
     amount: '',
@@ -14,7 +14,6 @@ function TransactionModal({ isOpen, onClose, onSave, transactionToEdit, categori
   useEffect(() => {
     if (isOpen) {
       if (transactionToEdit) {
-        // Mode Edit: Isi form dengan data transaksi
         setFormData({
           description: transactionToEdit.Description,
           amount: transactionToEdit.Amount,
@@ -22,7 +21,6 @@ function TransactionModal({ isOpen, onClose, onSave, transactionToEdit, categori
           category_id: transactionToEdit.CategoryID,
         });
       } else {
-        // Mode Tambah: Reset form
         setFormData({
           description: '',
           amount: '',
@@ -49,7 +47,6 @@ function TransactionModal({ isOpen, onClose, onSave, transactionToEdit, categori
     e.preventDefault();
     let finalCategoryId = formData.category_id;
 
-    // Jika user menambah kategori baru
     if (isAddingNewCategory && newCategoryName) {
       const token = sessionStorage.getItem('token');
       try {
@@ -57,20 +54,19 @@ function TransactionModal({ isOpen, onClose, onSave, transactionToEdit, categori
           { name: newCategoryName },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        finalCategoryId = response.data.ID; // Dapatkan ID dari kategori baru
+        finalCategoryId = response.data.ID;
       } catch (error) {
         console.error('Gagal membuat kategori baru:', error);
         return;
       }
     }
     
-    const finalData = {
-      ...formData,
-      amount: parseFloat(formData.amount),
-      category_id: parseInt(finalCategoryId),
-    };
-
+    const finalData = { ...formData, amount: parseFloat(formData.amount), category_id: parseInt(finalCategoryId) };
     onSave(finalData, transactionToEdit ? transactionToEdit.ID : null);
+  };
+
+  const handleDeleteClick = () => {
+    onDelete(transactionToEdit.ID);
   };
 
   if (!isOpen) return null;
@@ -81,30 +77,14 @@ function TransactionModal({ isOpen, onClose, onSave, transactionToEdit, categori
         <button className="modal-close-button" onClick={onClose}>&times;</button>
         <form onSubmit={handleSubmit} className="modal-form">
           <h2>{transactionToEdit ? 'Edit Transaksi' : 'Tambah Transaksi Baru'}</h2>
-          <input
-            name="description"
-            type="text"
-            placeholder="Deskripsi"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="amount"
-            type="number"
-            placeholder="Jumlah"
-            value={formData.amount}
-            onChange={handleChange}
-            required
-          />
+          <input name="description" type="text" placeholder="Deskripsi" value={formData.description} onChange={handleChange} required />
+          <input name="amount" type="number" placeholder="Jumlah" value={formData.amount} onChange={handleChange} required />
           <select name="type" value={formData.type} onChange={handleChange}>
             <option value="expense">Pengeluaran</option>
             <option value="income">Pendapatan</option>
           </select>
           <select name="category_id" value={isAddingNewCategory ? '--add-new--' : formData.category_id} onChange={handleChange} required>
-            {categories.map((cat) => (
-              <option key={cat.ID} value={cat.ID}>{cat.Name}</option>
-            ))}
+            {categories.map((cat) => (<option key={cat.ID} value={cat.ID}>{cat.Name}</option>))}
             <option value="--add-new--">-- Tambah Kategori Baru --</option>
           </select>
           {isAddingNewCategory && (
@@ -117,7 +97,15 @@ function TransactionModal({ isOpen, onClose, onSave, transactionToEdit, categori
               required
             />
           )}
-          <button type="submit">Simpan</button>
+          
+          <div className="modal-actions">
+            {transactionToEdit && (
+              <button type="button" className="modal-delete-button" onClick={handleDeleteClick} title="Hapus Transaksi">
+                Hapus
+              </button>
+            )}
+            <button type="submit" className="save-button" style={{ marginLeft: 'auto' }}>Simpan</button>
+          </div>
         </form>
       </div>
     </div>

@@ -1,8 +1,7 @@
-// file: src/pages/RegisterPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
-import '../Auth.css';
+import '../style/Auth.css';
 
 function RegisterPage() {
   const [username, setUsername] = useState('');

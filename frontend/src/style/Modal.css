@@ -37,12 +37,13 @@
   z-index: 1050;
 }
 
+/* Ukuran modal diperbesar */
 .modal-content {
   background: white;
   padding: 30px;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 90%;
-  max-width: 500px;
+  max-width: 650px; 
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
 }
@@ -78,19 +79,40 @@
   border-radius: 4px;
 }
 
-.modal-form button {
-  padding: 12px;
+/* Wadah untuk tombol Simpan dan Hapus */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end; 
+  gap: 10px; 
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  padding: 12px 20px;
   font-size: 16px;
-  border-radius: 4px;
+  border-radius: 8px;
   border: none;
+  cursor: pointer;
+}
+
+.save-button {
   background-color: #1a73e8;
   color: white;
-  cursor: pointer;
-  margin-top: 10px;
+}
+
+/* Style tombol hapus diubah */
+.modal-delete-button {
+  background-color: #f3f4f6;
+  color: #dc2626; 
+  font-weight: 500;
+}
+
+.modal-delete-button:hover {
+  background-color: #e5e7eb;
 }
 
 .modal-form .new-category-input {
-  margin-top: -5px; /* Sedikit lebih dekat ke dropdown */
+  margin-top: -5px;
 }
 
 /* Tabel Transaksi yang bisa diklik */
